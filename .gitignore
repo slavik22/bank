@@ -21,3 +21,5 @@
 go.work
 # Files created by OS X
 .DS_Store
+
+*.idea
