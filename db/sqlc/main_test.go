@@ -13,7 +13,7 @@ const (
 	dbSource = "postgres://postgres:pass@localhost:5432/testbank?sslmode=disable"
 )
 
-var testQueries *Queries
+var testStore *Store
 
 func TestMain(m *testing.M) {
 	conn, err := sql.Open(dbDriver, dbSource)
@@ -22,7 +22,7 @@ func TestMain(m *testing.M) {
 		log.Fatal("Cannot connect to db ", err)
 	}
 
-	testQueries = New(conn)
+	testStore = NewStore(conn)
 
 	os.Exit(m.Run())
 }
