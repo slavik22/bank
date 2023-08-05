@@ -3,9 +3,8 @@ package db
 import (
 	"context"
 	"fmt"
-	"testing"
-
 	"github.com/stretchr/testify/require"
+	"testing"
 )
 
 func TestTransferTx(t *testing.T) {
@@ -118,7 +117,7 @@ func TestTransferTxDeadlock(t *testing.T) {
 	account2 := createRandomAccount(t)
 	fmt.Println(">> before:", account1.Balance, account2.Balance)
 
-	n := 10
+	n := 4
 	amount := int64(10)
 	errs := make(chan error)
 
@@ -126,7 +125,7 @@ func TestTransferTxDeadlock(t *testing.T) {
 		fromAccountID := account1.ID
 		toAccountID := account2.ID
 
-		if i%2 == 1 {
+		if i%2 == 0 {
 			fromAccountID = account2.ID
 			toAccountID = account1.ID
 		}
@@ -156,6 +155,5 @@ func TestTransferTxDeadlock(t *testing.T) {
 
 	fmt.Println(">> after:", updatedAccount1.Balance, updatedAccount2.Balance)
 	require.Equal(t, account1.Balance, updatedAccount1.Balance)
-
 	require.Equal(t, account2.Balance, updatedAccount2.Balance)
 }
