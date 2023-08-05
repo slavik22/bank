@@ -1,5 +1,4 @@
 DB_URL=postgresql://postgres:pass@localhost:5432/bank?sslmode=disable
-
 network:
 	docker network create bank-network
 
