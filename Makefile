@@ -1,5 +1,4 @@
 DB_URL=postgresql://postgres:pass@localhost:5432/bank?sslmode=disable
-DB_URL_TEST=postgresql://postgres:pass@localhost:5432/testbank?sslmode=disable
 network:
 	docker network create bank-network
 
@@ -17,9 +16,6 @@ dropdb:
 
 migrateup:
 	migrate -path db/migrations -database "$(DB_URL)" -verbose up
-
-migrateuptest:
-	migrate -path db/migrations -database "$(DB_URL_TEST)" -verbose up
 
 migrateup1:
 	migrate -path db/migrations -database "$(DB_URL)" -verbose up 1
