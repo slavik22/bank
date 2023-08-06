@@ -18,7 +18,7 @@ func TestMain(m *testing.M) {
 		log.Fatal("Cannot read env ", err)
 	}
 
-	conn, err := sql.Open(conf.DBDriver, conf.DBTestSource)
+	conn, err := sql.Open(conf.DBDriver, conf.DBSource)
 
 	if err != nil {
 		log.Fatal("Cannot connect to db ", err)
