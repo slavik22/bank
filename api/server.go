@@ -14,7 +14,7 @@ type Server struct {
 	config   util.Config
 	store    db.Store
 	router   *gin.Engine
-	jwtMaker *token.JWTMaker
+	jwtMaker token.JWTMaker
 }
 
 func NewServer(config util.Config, store db.Store) (*Server, error) {
@@ -27,7 +27,7 @@ func NewServer(config util.Config, store db.Store) (*Server, error) {
 
 	server := &Server{
 		store:    store,
-		jwtMaker: jwt,
+		jwtMaker: *jwt,
 		config:   config,
 	}
 
@@ -46,12 +46,12 @@ func (server *Server) setupRouter() {
 	router.POST("/users/login", server.loginUser)
 	//router.POST("/tokens/renew_access", server.renewAccessToken)
 
-	//authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))
-	router.POST("/accounts", server.createAccount)
-	router.GET("/accounts/:id", server.getAccount)
-	router.GET("/accounts", server.listAccounts)
+	authRoutes := router.Group("/").Use(authMiddleware(server.jwtMaker))
+	authRoutes.POST("/accounts", server.createAccount)
+	authRoutes.GET("/accounts/:id", server.getAccount)
+	authRoutes.GET("/accounts", server.listAccounts)
 
-	router.POST("/transfers", server.createTransfer)
+	authRoutes.POST("/transfers", server.createTransfer)
 
 	server.router = router
 }

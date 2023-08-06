@@ -6,11 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/lib/pq"
 	db "github.com/slavik22/bank/db/sqlc"
+	"github.com/slavik22/bank/token"
 	"net/http"
 )
 
 type createAccountRequest struct {
-	Owner    string `json:"owner" binding:"required"`
 	Currency string `json:"currency" binding:"required,oneof=USD EUR UAH CAD"`
 }
 
@@ -22,7 +22,11 @@ func (server *Server) createAccount(ctx *gin.Context) {
 		return
 	}
 
-	account, err := server.store.CreateAccount(ctx, db.CreateAccountParams{Owner: requestData.Owner, Balance: 0, Currency: requestData.Currency})
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+	args := db.CreateAccountParams{Owner: authPayload.Username, Balance: 0, Currency: requestData.Currency}
+
+	account, err := server.store.CreateAccount(ctx, args)
+
 	if err != nil {
 		if pqErr, ok := err.(*pq.Error); ok {
 			switch pqErr.Code.Name() {
@@ -61,6 +65,13 @@ func (server *Server) getAccount(ctx *gin.Context) {
 		return
 	}
 
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+	if account.Owner != authPayload.Username {
+		err := errors.New("User is not owner of this account")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		return
+	}
+
 	ctx.JSON(http.StatusOK, account)
 }
 
@@ -76,7 +87,12 @@ func (server *Server) listAccounts(ctx *gin.Context) {
 		return
 	}
 
-	arg := db.ListAccountsParams{Limit: req.PageSize, Offset: (req.PageId - 1) * req.PageSize}
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+	arg := db.ListAccountsParams{
+		Owner:  authPayload.Username,
+		Limit:  req.PageSize,
+		Offset: (req.PageId - 1) * req.PageSize,
+	}
 
 	account, err := server.store.ListAccounts(ctx, arg)
 

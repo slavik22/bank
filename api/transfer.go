@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/slavik22/bank/token"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -24,8 +25,16 @@ func (server *Server) createTransfer(ctx *gin.Context) {
 		return
 	}
 
-	_, valid := server.validAccount(ctx, req.FromAccountID, req.Currency)
+	fromAccount, valid := server.validAccount(ctx, req.FromAccountID, req.Currency)
 	if !valid {
+		return
+	}
+
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+
+	if fromAccount.Owner != authPayload.Username {
+		err := errors.New("User is not owner of the account")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
 		return
 	}
 
