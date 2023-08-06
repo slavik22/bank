@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/lib/pq"
 	db "github.com/slavik22/bank/db/sqlc"
@@ -46,6 +47,8 @@ func (server *Server) createUser(ctx *gin.Context) {
 	}
 
 	account, err := server.store.CreateUser(ctx, arg)
+
+	fmt.Println("err")
 
 	if err != nil {
 		if pqErr, ok := err.(*pq.Error); ok {
