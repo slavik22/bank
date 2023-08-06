@@ -1,6 +1,7 @@
 package db
 
 import (
+	"bank/util"
 	"database/sql"
 	_ "github.com/lib/pq"
 	"log"
@@ -8,15 +9,16 @@ import (
 	"testing"
 )
 
-const (
-	dbDriver = "postgres"
-	dbSource = "postgres://postgres:pass@localhost:5432/testbank?sslmode=disable"
-)
-
 var testStore *Store
 
 func TestMain(m *testing.M) {
-	conn, err := sql.Open(dbDriver, dbSource)
+	conf, err := util.LoadConfig("../../")
+
+	if err != nil {
+		log.Fatal("Cannot read env ", err)
+	}
+
+	conn, err := sql.Open(conf.DBDriver, conf.DBTestSource)
 
 	if err != nil {
 		log.Fatal("Cannot connect to db ", err)
