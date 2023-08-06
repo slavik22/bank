@@ -1,15 +1,15 @@
 package db
 
 import (
-	"bank/util"
 	"database/sql"
 	_ "github.com/lib/pq"
+	"github.com/slavik22/bank/util"
 	"log"
 	"os"
 	"testing"
 )
 
-var testStore *Store
+var testStore Store
 
 func TestMain(m *testing.M) {
 	conf, err := util.LoadConfig("../../")

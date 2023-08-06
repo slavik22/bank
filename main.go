@@ -1,10 +1,10 @@
 package main
 
 import (
-	"bank/api"
-	db "bank/db/sqlc"
-	"bank/util"
 	"database/sql"
+	"github.com/slavik22/bank/api"
+	db "github.com/slavik22/bank/db/sqlc"
+	"github.com/slavik22/bank/util"
 	"log"
 
 	_ "github.com/lib/pq"

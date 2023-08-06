@@ -1,16 +1,16 @@
 package api
 
 import (
-	db "bank/db/sqlc"
 	"database/sql"
 	"errors"
 	"github.com/gin-gonic/gin"
+	db "github.com/slavik22/bank/db/sqlc"
 	"net/http"
 )
 
 type createAccountRequest struct {
 	Owner    string `json:"owner" binding:"required"`
-	Currency string `json:"currency" binding:"required,oneof=USD EUR UAH"`
+	Currency string `json:"currency" binding:"required,oneof=USD EUR UAH CAD"`
 }
 
 func (server *Server) createAccount(ctx *gin.Context) {

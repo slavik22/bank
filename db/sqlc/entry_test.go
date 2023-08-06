@@ -1,8 +1,8 @@
 package db
 
 import (
-	"bank/util"
 	"context"
+	"github.com/slavik22/bank/util"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
